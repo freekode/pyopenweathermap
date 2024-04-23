@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "pyopenweathermap"
+version = "0.0.1"
+description = ""
+authors = ["Evgeny <iam@freekode.org>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
