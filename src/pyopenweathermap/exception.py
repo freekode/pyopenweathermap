@@ -1,0 +1,2 @@
+class OWMException(Exception):
+    pass

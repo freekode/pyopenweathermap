@@ -1,13 +1,21 @@
 [tool.poetry]
 name = "pyopenweathermap"
 version = "0.0.1"
-description = ""
+description = "lib for OpenWeatherMap for Home Assistant"
 authors = ["Evgeny <iam@freekode.org>"]
+license = "MIT"
 readme = "README.md"
+keywords = ["homeassistant", "owm", "openweathermap"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+aiohttp = "^3.9.5"
+dataclasses-json = "^0.6.4"
 
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+pytest-asyncio = "^0.23.6"
 
 [build-system]
 requires = ["poetry-core"]
