@@ -24,7 +24,7 @@ class HourlyWeather:
     wind_deg: str
     wind_gust: str
     condition: object = field(metadata=config(field_name="weather"))
-    # precipitation_probability: Optional[str] = field(metadata=config(field_name="pop"))
+    precipitation_probability: Optional[str] = field(default=None, metadata=config(field_name="pop"))
     rain: Optional[object] = None
     snow: Optional[object] = None
 
@@ -48,7 +48,7 @@ class DailyWeather:
     wind_deg: str
     wind_gust: str
     condition: object = field(metadata=config(field_name="weather"))
-    # precipitation_probability: Optional[str] = field(metadata=config(field_name="pop"))
+    precipitation_probability: Optional[str] = field(default=None, metadata=config(field_name="pop"))
     rain: Optional[str] = None
     snow: Optional[str] = None
 

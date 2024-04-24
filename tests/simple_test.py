@@ -6,12 +6,11 @@ from src.pyopenweathermap import OWMException
 
 @pytest.mark.asyncio
 async def test_my_test():
-    client = OWMClient('11', 'metric')
+    client = OWMClient('123', 'metric')
     report = await client.one_call('51.051', '16.202', ['current', 'hourly', 'daily'])
     assert report.current.datetime is not None
     assert len(report.hourly) > 0
     assert len(report.daily) > 0
-    print(report.current.datetime)
 
 
 @pytest.mark.asyncio

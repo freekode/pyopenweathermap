@@ -11,9 +11,10 @@ class OWMClient:
     session: ClientSession | None = None
     request_timeout: int = 10
 
-    def __init__(self, api_key, units):
+    def __init__(self, api_key, units, lang='en'):
         self.api_key = api_key
         self.units = units
+        self.lang = lang
 
     async def one_call(self, lat, lon, weather_types=None):
         if weather_types is None:
@@ -60,6 +61,7 @@ class OWMClient:
         return (f"{API_URL}?"
                 f"lat={lat}&"
                 f"lon={lon}&"
+                f"exclude={','.join(exclude)}&"
                 f"appid={self.api_key}&"
                 f"units={self.units}&"
-                f"exclude={','.join(exclude)}")
+                f"lang={self.lang}")
