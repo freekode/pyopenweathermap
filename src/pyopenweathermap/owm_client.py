@@ -1,6 +1,6 @@
 from aiohttp import ClientSession
 
-from .exception import OWMException
+from .exception import RequestError, UnauthorizedError, TooManyRequestsError
 from .weather import HourlyWeather, DailyWeather, WeatherReport
 
 API_URL = 'https://api.openweathermap.org/data/3.0/onecall'
@@ -11,7 +11,7 @@ class OWMClient:
     session: ClientSession | None = None
     request_timeout: int = 10
 
-    def __init__(self, api_key, units, lang='en'):
+    def __init__(self, api_key, units="metric", lang='en'):
         self.api_key = api_key
         self.units = units
         self.lang = lang
@@ -35,9 +35,13 @@ class OWMClient:
 
         return WeatherReport(current, hourly, daily)
 
-    async def validate_key(self):
+    async def validate_key(self) -> bool:
         url = self._get_url(50.06, 14.44, WEATHER_TYPES)
-        await self._request(url)
+        try:
+            await self._request(url)
+            return True
+        except UnauthorizedError:
+            return False
 
     async def _request(self, url):
         print(url)
@@ -47,15 +51,15 @@ class OWMClient:
                     if response.status == 200:
                         return await response.json()
                     elif response.status == 401:
-                        raise OWMException("Unauthorized")
+                        raise UnauthorizedError
                     elif response.status == 404:
-                        raise OWMException("Not Found")
+                        raise RequestError("Not Found")
                     elif response.status == 429:
-                        raise OWMException("Too Many Requests")
+                        raise TooManyRequestsError
                     else:
-                        raise OWMException("Unknown Error")
+                        raise RequestError("Unknown Error")
             except TimeoutError:
-                raise OWMException("Request timeout")
+                raise RequestError("Request timeout")
 
     def _get_url(self, lat, lon, exclude):
         return (f"{API_URL}?"

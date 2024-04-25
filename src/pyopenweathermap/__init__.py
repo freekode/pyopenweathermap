@@ -1,5 +1,7 @@
 from .exception import (
-    OWMException
+    RequestError,
+    UnauthorizedError,
+    TooManyRequestsError
 )
 from .owm_client import OWMClient
 from .weather import (
