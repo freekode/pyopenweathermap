@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from src.pyopenweathermap import OWMClient
@@ -6,7 +8,8 @@ from src.pyopenweathermap import OWMException
 
 @pytest.mark.asyncio
 async def test_my_test():
-    client = OWMClient('123', 'metric')
+    api_key = os.getenv("OWM_API_KEY")
+    client = OWMClient(api_key, 'metric')
     report = await client.one_call('51.051', '16.202', ['current', 'hourly', 'daily'])
     assert report.current.datetime is not None
     assert len(report.hourly) > 0

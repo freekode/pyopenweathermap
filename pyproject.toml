@@ -6,6 +6,9 @@ authors = ["Evgeny <iam@freekode.org>"]
 license = "MIT"
 readme = "README.md"
 keywords = ["homeassistant", "owm", "openweathermap"]
+packages = [
+    { include = "pyopenweathermap", from = "src" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
