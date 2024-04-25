@@ -22,8 +22,8 @@ class HourlyWeather:
     visibility: str
     wind_speed: str
     wind_deg: str
-    wind_gust: str
     condition: object = field(metadata=config(field_name="weather"))
+    wind_gust: str = None
     precipitation_probability: Optional[str] = field(default=None, metadata=config(field_name="pop"))
     rain: Optional[object] = None
     snow: Optional[object] = None

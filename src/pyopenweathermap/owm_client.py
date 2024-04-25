@@ -16,7 +16,7 @@ class OWMClient:
         self.units = units
         self.lang = lang
 
-    async def one_call(self, lat, lon, weather_types=None):
+    async def get_weather(self, lat, lon, weather_types=None) -> WeatherReport:
         if weather_types is None:
             exclude_weather_types = {}
         else:
@@ -27,6 +27,7 @@ class OWMClient:
 
         current, hourly, daily = None, None, None
         if json_response.get('current') is not None:
+            print(json_response['current'])
             current = HourlyWeather.from_dict(json_response['current'])
         if json_response.get('hourly') is not None:
             hourly = [HourlyWeather.from_dict(item) for item in json_response['hourly']]
