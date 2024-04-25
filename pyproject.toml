@@ -13,7 +13,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.10"
 aiohttp = "^3.9.5"
-dataclasses-json = "^0.6.4"
+pydantic = "^2.7.1"
 
 
 [tool.poetry.group.dev.dependencies]

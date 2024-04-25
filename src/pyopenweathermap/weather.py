@@ -1,56 +1,46 @@
-from dataclasses import dataclass, field
+import decimal
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
 
-from dataclasses_json import dataclass_json, config
-
-
-@dataclass_json
-@dataclass
-class HourlyWeather:
-    datetime: datetime = field(metadata=config(
-        encoder=datetime.isoformat,
-        decoder=datetime.fromtimestamp,
-        field_name="dt"))
-    temperature: str = field(metadata=config(field_name="temp"))
-    feels_like: str
-    pressure: str
-    humidity: str
-    dew_point: str
-    uv_index: str = field(metadata=config(field_name="uvi"))
-    clouds: str
-    visibility: str
-    wind_speed: str
-    wind_deg: str
-    condition: object = field(metadata=config(field_name="weather"))
-    wind_gust: str = None
-    precipitation_probability: Optional[str] = field(default=None, metadata=config(field_name="pop"))
-    rain: Optional[object] = None
-    snow: Optional[object] = None
+from pydantic import BaseModel, Field
 
 
-@dataclass_json
-@dataclass
-class DailyWeather:
-    datetime: datetime = field(metadata=config(
-        encoder=datetime.isoformat,
-        decoder=datetime.fromtimestamp,
-        field_name="dt"))
-    summary: str
-    temperature: object = field(metadata=config(field_name="temp"))
+class HourlyWeather(BaseModel):
+    date_time: datetime = Field(alias='dt')
+    temperature: decimal.Decimal = Field(alias='temp')
+    feels_like: decimal.Decimal
+    pressure: int
+    humidity: int
+    dew_point: decimal.Decimal
+    uv_index: decimal.Decimal = Field(alias='uvi')
+    clouds: int
+    visibility: int
+    wind_speed: decimal.Decimal
+    wind_deg: decimal.Decimal
+    wind_gust: decimal.Decimal = None
+    precipitation_probability: int = None
+    rain: object = None
+    snow: object = None
+    condition: object = Field(alias='weather')
+
+
+class DailyWeather(BaseModel):
+    date_time: datetime = Field(alias='dt')
+    temperature: object = Field(alias='temp')
     feels_like: object
-    pressure: str
-    humidity: str
-    dew_point: str
-    uv_index: str = field(metadata=config(field_name="uvi"))
-    clouds: str
-    wind_speed: str
-    wind_deg: str
-    wind_gust: str
-    condition: object = field(metadata=config(field_name="weather"))
-    precipitation_probability: Optional[str] = field(default=None, metadata=config(field_name="pop"))
-    rain: Optional[str] = None
-    snow: Optional[str] = None
+    pressure: int
+    humidity: int
+    dew_point: decimal.Decimal
+    uv_index: decimal.Decimal = Field(alias='uvi')
+    clouds: int
+    wind_speed: decimal.Decimal
+    wind_deg: decimal.Decimal
+    wind_gust: decimal.Decimal = None
+    precipitation_probability: int = None
+    rain: object = None
+    snow: object = None
+    condition: object = Field(alias='weather')
+    summary: str
 
 
 @dataclass

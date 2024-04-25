@@ -28,11 +28,11 @@ class OWMClient:
         current, hourly, daily = None, None, None
         if json_response.get('current') is not None:
             print(json_response['current'])
-            current = HourlyWeather.from_dict(json_response['current'])
+            current = HourlyWeather(**json_response['current'])
         if json_response.get('hourly') is not None:
-            hourly = [HourlyWeather.from_dict(item) for item in json_response['hourly']]
+            hourly = [HourlyWeather(**item) for item in json_response['hourly']]
         if json_response.get('daily') is not None:
-            daily = [DailyWeather.from_dict(item) for item in json_response['daily']]
+            daily = [DailyWeather(**item) for item in json_response['daily']]
 
         return WeatherReport(current, hourly, daily)
 
