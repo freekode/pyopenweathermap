@@ -5,5 +5,5 @@ from .exception import (
 )
 from .owm_client import OWMClient
 from .weather import (
-    HourlyWeather, DailyWeather, WeatherReport
+    CurrentWeather, HourlyWeatherForecast, DailyWeatherForecast, WeatherReport,
 )

@@ -1,7 +1,7 @@
 from aiohttp import ClientSession
 
 from .exception import RequestError, UnauthorizedError, TooManyRequestsError
-from .weather import HourlyWeather, DailyWeather, WeatherReport
+from .weather import WeatherReport, CurrentWeather, HourlyWeatherForecast, DailyWeatherForecast
 
 API_URL = 'https://api.openweathermap.org/data/3.0/onecall'
 WEATHER_TYPES = {'current', 'minutely', 'hourly', 'daily', 'alerts'}
@@ -27,12 +27,11 @@ class OWMClient:
 
         current, hourly, daily = None, None, None
         if json_response.get('current') is not None:
-            print(json_response['current'])
-            current = HourlyWeather(**json_response['current'])
+            current = CurrentWeather(**json_response['current'])
         if json_response.get('hourly') is not None:
-            hourly = [HourlyWeather(**item) for item in json_response['hourly']]
+            hourly = [HourlyWeatherForecast(**item) for item in json_response['hourly']]
         if json_response.get('daily') is not None:
-            daily = [DailyWeather(**item) for item in json_response['daily']]
+            daily = [DailyWeatherForecast(**item) for item in json_response['daily']]
 
         return WeatherReport(current, hourly, daily)
 
