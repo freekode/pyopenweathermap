@@ -44,7 +44,6 @@ class OWMClient:
             return False
 
     async def _request(self, url):
-        print(url)
         async with ClientSession() as session:
             try:
                 async with session.get(url=url, timeout=self.request_timeout) as response:
