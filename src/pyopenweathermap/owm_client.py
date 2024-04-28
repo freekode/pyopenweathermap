@@ -9,12 +9,13 @@ WEATHER_TYPES = {'current', 'minutely', 'hourly', 'daily', 'alerts'}
 
 class OWMClient:
     session: ClientSession | None = None
-    request_timeout: int = 10
+    request_timeout: int
 
-    def __init__(self, api_key, units="metric", lang='en'):
+    def __init__(self, api_key, units="metric", lang='en', request_timeout=20):
         self.api_key = api_key
         self.units = units
         self.lang = lang
+        self.request_timeout = request_timeout
 
     async def get_weather(self, lat, lon, weather_types=None) -> WeatherReport:
         if weather_types is None:
