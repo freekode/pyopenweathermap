@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyopenweathermap"
-version = "0.0.3"
+version = "0.0.5"
 description = "lib for OpenWeatherMap for Home Assistant"
 authors = ["Evgeny <iam@freekode.org>"]
 license = "MIT"
@@ -13,7 +13,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.11"
 aiohttp = "^3.9.5"
-pydantic = "^2.7.1"
+pydantic = "^1.10.0"
 
 
 [tool.poetry.group.dev.dependencies]
