@@ -2,10 +2,7 @@ import os
 
 import pytest
 
-from pyopenweathermap import CurrentWeather, HourlyWeatherForecast
-from src.pyopenweathermap import (
-    OWMClient
-)
+from pyopenweathermap import CurrentWeather, HourlyWeatherForecast, RequestError, OWMClient
 
 
 @pytest.mark.asyncio
@@ -17,6 +14,15 @@ async def test_get_weather():
     assert report.hourly_forecast[0].get_weather().id is not None
     assert report.daily_forecast[0].get_weather().id is not None
     print(report.hourly_forecast[0].date_time.timestamp())
+
+
+@pytest.mark.asyncio
+async def test_request_error():
+    api_key = os.getenv('OWM_API_KEY')
+    client = OWMClient(api_key, 'metric')
+    with pytest.raises(RequestError) as error:
+        await client.get_weather('100', '4.8903147', ['current', 'hourly', 'daily'])
+    assert error is not None
 
 
 @pytest.mark.asyncio
