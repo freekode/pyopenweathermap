@@ -60,9 +60,13 @@ class OWMClient:
                     elif response.status == 429:
                         raise TooManyRequestsError(response_json.get('message'))
                     else:
-                        raise RequestError("Unknown Error")
+                        raise RequestError("Unknown status code: {}".format(response.status))
             except TimeoutError:
                 raise RequestError("Request timeout")
+            except RequestError as error:
+                raise error
+            except Exception as error:
+                raise RequestError(error) from error
 
     def _get_url(self, lat, lon, exclude):
         return (f"{API_URL}?"
