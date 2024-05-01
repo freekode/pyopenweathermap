@@ -1,8 +1,8 @@
 import os
 
 import pytest
-from pyopenweathermap import RequestError, OWMClientFactory
-from pyopenweathermap.v30.converter import DataConverter
+from pyopenweathermap import RequestError, OWMClient
+from pyopenweathermap.data_converter import DataConverter
 
 LATITUDE = '52.3731339'
 LONGITUDE = '4.8903147'
@@ -11,7 +11,7 @@ LONGITUDE = '4.8903147'
 @pytest.mark.asyncio
 async def test_api_30():
     api_key = os.getenv('OWM_API_KEY')
-    client = OWMClientFactory.get_client(api_key, 'v3.0')
+    client = OWMClient(api_key, 'v3.0')
     report = await client.get_weather(LATITUDE, LONGITUDE, ['current', 'hourly', 'daily'])
     assert report.current.date_time is not None
     assert report.hourly_forecast[0].condition.id is not None
@@ -21,22 +21,23 @@ async def test_api_30():
 @pytest.mark.asyncio
 async def test_api_25():
     api_key = os.getenv('OWM_API_KEY')
-    client = OWMClientFactory.get_client(api_key, 'v2.5')
-    report = await client.get_weather(LATITUDE, LONGITUDE, ['current', 'hourly'])
+    client = OWMClient(api_key, 'v2.5')
+    report = await client.get_weather(LATITUDE, LONGITUDE, ['current', 'hourly', 'daily'])
     assert report.current.date_time is not None
     assert report.hourly_forecast[0].condition.id is not None
+    assert report.daily_forecast[0].condition.id is not None
 
 
 @pytest.mark.asyncio
 async def test_api_25_validate_key():
-    client = OWMClientFactory.get_client('123', 'v2.5')
+    client = OWMClient('123', 'v2.5')
     assert await client.validate_key() is False
 
 
 @pytest.mark.asyncio
 async def test_request_error():
     api_key = os.getenv('OWM_API_KEY')
-    client = OWMClientFactory.get_client(api_key, 'v3.0')
+    client = OWMClient(api_key, 'v3.0')
     with pytest.raises(RequestError) as error:
         await client.get_weather('100', LONGITUDE, ['current', 'hourly', 'daily'])
     assert error is not None
@@ -44,7 +45,7 @@ async def test_request_error():
 
 @pytest.mark.asyncio
 async def test_api_key_validation():
-    client = OWMClientFactory.get_client('123', 'v3.0')
+    client = OWMClient('123', 'v3.0')
     assert await client.validate_key() is False
 
 

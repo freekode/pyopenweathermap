@@ -1,20 +1,54 @@
-from abc import ABC, abstractmethod
-
 from aiohttp import ClientSession
 
-from .exception import RequestError, TooManyRequestsError, UnauthorizedError
+from .data_converter import DataConverter
+from .exception import UnauthorizedError, RequestError, TooManyRequestsError
+from .weather import WeatherReport
 
+API_V30_URL = 'https://api.openweathermap.org/data/3.0/onecall'
+API_V25_URL = 'https://api.openweathermap.org/data/2.5/onecall'
 WEATHER_TYPES = {'current', 'minutely', 'hourly', 'daily', 'alerts'}
 
 
-class OWMClient(ABC):
-    @abstractmethod
-    async def get_weather(self, lat, lon, weather_types=set()):
-        pass
+class OWMClient:
+    session: ClientSession | None = None
+    request_timeout: int
 
-    @abstractmethod
-    async def validate_key(self):
-        pass
+    def __init__(self, api_key, api_version, units="metric", lang='en', request_timeout=20):
+        if api_version == 'v3.0':
+            self.main_url = API_V30_URL
+        elif api_version == 'v2.5':
+            self.main_url = API_V25_URL
+        self.api_key = api_key
+        self.units = units
+        self.lang = lang
+        self.request_timeout = request_timeout
+
+    async def get_weather(self, lat, lon, weather_types=set()) -> WeatherReport:
+        if weather_types is None:
+            exclude_weather_types = {}
+        else:
+            exclude_weather_types = WEATHER_TYPES - set(weather_types)
+
+        url = self._get_url(lat, lon, exclude_weather_types)
+        json_response = await self._request(url)
+
+        current, hourly, daily = None, [], []
+        if json_response.get('current') is not None:
+            current = DataConverter.to_current_weather(json_response['current'])
+        if json_response.get('hourly') is not None:
+            hourly = [DataConverter.to_hourly_weather_forecast(item) for item in json_response['hourly']]
+        if json_response.get('daily') is not None:
+            daily = [DataConverter.to_daily_weather_forecast(item) for item in json_response['daily']]
+
+        return WeatherReport(current, hourly, daily)
+
+    async def validate_key(self) -> bool:
+        url = self._get_url(50.06, 14.44, WEATHER_TYPES)
+        try:
+            await self._request(url)
+            return True
+        except UnauthorizedError:
+            return False
 
     async def _request(self, url):
         async with ClientSession() as session:
@@ -39,3 +73,12 @@ class OWMClient(ABC):
                 raise error
             except Exception as error:
                 raise RequestError(error) from error
+
+    def _get_url(self, lat, lon, exclude):
+        return (f"{self.main_url}?"
+                f"lat={lat}&"
+                f"lon={lon}&"
+                f"exclude={','.join(exclude)}&"
+                f"appid={self.api_key}&"
+                f"units={self.units}&"
+                f"lang={self.lang}")

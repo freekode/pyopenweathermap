@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from ..weather import CurrentWeather, WeatherCondition, HourlyWeatherForecast, DailyWeatherForecast, DailyTemperature
+from .weather import CurrentWeather, WeatherCondition, HourlyWeatherForecast, DailyWeatherForecast, DailyTemperature
 
 
 class DataConverter:
@@ -49,7 +49,7 @@ class DataConverter:
     def to_daily_weather_forecast(json):
         return DailyWeatherForecast(
             date_time=datetime.fromtimestamp(json['dt']),
-            summary=json['summary'],
+            summary=json.get('summary'),
             temperature=DataConverter._to_daily_temperature(json['temp']),
             feels_like=DataConverter._to_daily_temperature(json['feels_like']),
             pressure=json['pressure'],
