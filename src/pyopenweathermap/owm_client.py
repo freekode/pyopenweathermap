@@ -1,48 +1,20 @@
+from abc import ABC, abstractmethod
+
 from aiohttp import ClientSession
 
-from .exception import RequestError, UnauthorizedError, TooManyRequestsError
-from .weather import WeatherReport, CurrentWeather, HourlyWeatherForecast, DailyWeatherForecast
+from .exception import RequestError, TooManyRequestsError, UnauthorizedError
 
-API_URL = 'https://api.openweathermap.org/data/3.0/onecall'
 WEATHER_TYPES = {'current', 'minutely', 'hourly', 'daily', 'alerts'}
 
 
-class OWMClient:
-    session: ClientSession | None = None
-    request_timeout: int
+class OWMClient(ABC):
+    @abstractmethod
+    async def get_weather(self, lat, lon, weather_types=set()):
+        pass
 
-    def __init__(self, api_key, units="metric", lang='en', request_timeout=20):
-        self.api_key = api_key
-        self.units = units
-        self.lang = lang
-        self.request_timeout = request_timeout
-
-    async def get_weather(self, lat, lon, weather_types=None) -> WeatherReport:
-        if weather_types is None:
-            exclude_weather_types = {}
-        else:
-            exclude_weather_types = WEATHER_TYPES - set(weather_types)
-
-        url = self._get_url(lat, lon, exclude_weather_types)
-        json_response = await self._request(url)
-
-        current, hourly, daily = None, None, None
-        if json_response.get('current') is not None:
-            current = CurrentWeather(**json_response['current'])
-        if json_response.get('hourly') is not None:
-            hourly = [HourlyWeatherForecast(**item) for item in json_response['hourly']]
-        if json_response.get('daily') is not None:
-            daily = [DailyWeatherForecast(**item) for item in json_response['daily']]
-
-        return WeatherReport(current, hourly, daily)
-
-    async def validate_key(self) -> bool:
-        url = self._get_url(50.06, 14.44, WEATHER_TYPES)
-        try:
-            await self._request(url)
-            return True
-        except UnauthorizedError:
-            return False
+    @abstractmethod
+    async def validate_key(self):
+        pass
 
     async def _request(self, url):
         async with ClientSession() as session:
@@ -67,12 +39,3 @@ class OWMClient:
                 raise error
             except Exception as error:
                 raise RequestError(error) from error
-
-    def _get_url(self, lat, lon, exclude):
-        return (f"{API_URL}?"
-                f"lat={lat}&"
-                f"lon={lon}&"
-                f"exclude={','.join(exclude)}&"
-                f"appid={self.api_key}&"
-                f"units={self.units}&"
-                f"lang={self.lang}")

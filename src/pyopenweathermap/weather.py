@@ -2,88 +2,82 @@ import decimal
 from dataclasses import dataclass
 from datetime import datetime
 
-from pydantic import BaseModel, Field
 
-
-class DailyTemperature(BaseModel):
+@dataclass
+class DailyTemperature:
     day: decimal.Decimal
-    min: decimal.Decimal = None
-    max: decimal.Decimal = None
+    min: decimal.Decimal
+    max: decimal.Decimal
     night: decimal.Decimal
-    evening: decimal.Decimal = Field(alias='eve')
-    morning: decimal.Decimal = Field(alias='morn')
+    evening: decimal.Decimal
+    morning: decimal.Decimal
 
 
-class WeatherCondition(BaseModel):
+@dataclass
+class WeatherCondition:
     id: int
     main: str
     description: str
     icon: str
 
 
-class CurrentWeather(BaseModel):
-    date_time: datetime = Field(alias='dt')
-    temperature: decimal.Decimal = Field(alias='temp')
+@dataclass
+class CurrentWeather:
+    date_time: datetime
+    temperature: decimal.Decimal
     feels_like: decimal.Decimal
     pressure: int
     humidity: int
     dew_point: decimal.Decimal
-    uv_index: decimal.Decimal = Field(alias='uvi')
-    clouds: int
+    uv_index: decimal.Decimal
+    cloud_coverage: int
     visibility: int
     wind_speed: decimal.Decimal
-    wind_gust: decimal.Decimal = None
-    wind_deg: int
-    rain: dict = {}
-    snow: dict = {}
-    condition: list[WeatherCondition] = Field(alias='weather')
-
-    def get_weather(self):
-        return self.condition[0]
+    wind_gust: int
+    wind_bearing: decimal.Decimal
+    rain: dict
+    snow: dict
+    condition: WeatherCondition
 
 
-class HourlyWeatherForecast(BaseModel):
-    date_time: datetime = Field(alias='dt')
-    temperature: decimal.Decimal = Field(alias='temp')
+@dataclass
+class HourlyWeatherForecast:
+    date_time: datetime
+    temperature: decimal.Decimal
     feels_like: decimal.Decimal
     pressure: int
     humidity: int
     dew_point: decimal.Decimal
-    uv_index: decimal.Decimal = Field(alias='uvi')
-    clouds: int
+    uv_index: decimal.Decimal
+    cloud_coverage: int
     visibility: int
     wind_speed: decimal.Decimal
-    wind_gust: decimal.Decimal = None
-    wind_deg: int
-    precipitation_probability: decimal.Decimal = Field(alias='pop', default=0)
-    rain: dict = {}
-    snow: dict = {}
-    condition: list[WeatherCondition] = Field(alias='weather')
-
-    def get_weather(self):
-        return self.condition[0]
+    wind_gust: decimal.Decimal
+    wind_bearing: int
+    precipitation_probability: decimal.Decimal
+    rain: dict
+    snow: dict
+    condition: WeatherCondition
 
 
-class DailyWeatherForecast(BaseModel):
-    date_time: datetime = Field(alias='dt')
+@dataclass
+class DailyWeatherForecast:
+    date_time: datetime
     summary: str
-    temperature: DailyTemperature = Field(alias='temp')
+    temperature: DailyTemperature
     feels_like: DailyTemperature
     pressure: int
     humidity: int
     dew_point: decimal.Decimal
-    uv_index: decimal.Decimal = Field(alias='uvi')
-    clouds: int
+    uv_index: decimal.Decimal
+    cloud_coverage: int
     wind_speed: decimal.Decimal
-    wind_gust: decimal.Decimal = None
-    wind_deg: int
-    precipitation_probability: decimal.Decimal = Field(alias='pop', default=0)
-    rain: decimal.Decimal = 0
-    snow: decimal.Decimal = 0
-    condition: list[WeatherCondition] = Field(alias='weather')
-
-    def get_weather(self):
-        return self.condition[0]
+    wind_gust: decimal.Decimal
+    wind_bearing: int
+    precipitation_probability: decimal.Decimal
+    rain: decimal.Decimal
+    snow: decimal.Decimal
+    condition: WeatherCondition
 
 
 @dataclass
