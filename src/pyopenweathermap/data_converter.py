@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from .weather import CurrentWeather, WeatherCondition, HourlyWeatherForecast, DailyWeatherForecast, DailyTemperature
 
@@ -7,7 +7,7 @@ class DataConverter:
     @staticmethod
     def to_current_weather(json):
         return CurrentWeather(
-            date_time=datetime.fromtimestamp(json['dt']),
+            date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
             temperature=json['temp'],
             feels_like=json['feels_like'],
             pressure=json['pressure'],
@@ -19,15 +19,15 @@ class DataConverter:
             wind_speed=json['wind_speed'],
             wind_gust=json.get('wind_gust'),
             wind_bearing=json['wind_deg'],
-            rain=json.get('rain'),
-            snow=json.get('snow'),
+            rain=json.get('rain', {}),
+            snow=json.get('snow', {}),
             condition=DataConverter._to_weather_condition(json['weather'][0]),
         )
 
     @staticmethod
     def to_hourly_weather_forecast(json):
         return HourlyWeatherForecast(
-            date_time=datetime.fromtimestamp(json['dt']),
+            date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
             temperature=json['temp'],
             feels_like=json['feels_like'],
             pressure=json['pressure'],
@@ -40,15 +40,15 @@ class DataConverter:
             wind_gust=json.get('wind_gust'),
             wind_bearing=json['wind_deg'],
             precipitation_probability=json.get('pop', 0),
-            rain=json.get('rain'),
-            snow=json.get('snow'),
+            rain=json.get('rain', {}),
+            snow=json.get('snow', {}),
             condition=DataConverter._to_weather_condition(json['weather'][0]),
         )
 
     @staticmethod
     def to_daily_weather_forecast(json):
         return DailyWeatherForecast(
-            date_time=datetime.fromtimestamp(json['dt']),
+            date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
             summary=json.get('summary'),
             temperature=DataConverter._to_daily_temperature(json['temp']),
             feels_like=DataConverter._to_daily_temperature(json['feels_like']),

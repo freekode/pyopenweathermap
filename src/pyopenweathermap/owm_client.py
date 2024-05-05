@@ -21,12 +21,14 @@ class OWMClient:
             self.main_url = API_V30_URL
         elif api_version == 'v2.5':
             self.main_url = API_V25_URL
+        else:
+            raise Exception('Unsupported API version ' + str(api_version))
         self.api_key = api_key
         self.units = units
         self.lang = lang
         self.request_timeout = request_timeout
 
-    async def get_weather(self, lat, lon, weather_types=set()) -> WeatherReport:
+    async def get_weather(self, lat, lon, weather_types=None) -> WeatherReport:
         if weather_types is None:
             exclude_weather_types = {}
         else:
