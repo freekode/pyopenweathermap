@@ -8,6 +8,7 @@ LATITUDE = '52.3731339'
 LONGITUDE = '4.8903147'
 
 
+@pytest.mark.network
 @pytest.mark.asyncio
 async def test_api_30():
     api_key = os.getenv('OWM_API_KEY')
@@ -18,6 +19,7 @@ async def test_api_30():
     assert report.daily_forecast[0].condition.id is not None
 
 
+@pytest.mark.network
 @pytest.mark.asyncio
 async def test_api_25():
     api_key = os.getenv('OWM_API_KEY')
@@ -28,6 +30,7 @@ async def test_api_25():
     assert report.daily_forecast[0].condition.id is not None
 
 
+@pytest.mark.network
 @pytest.mark.asyncio
 async def test_api_25_validate_key():
     client = OWMClient('123', 'v2.5')
@@ -43,6 +46,7 @@ async def test_request_error():
     assert error is not None
 
 
+@pytest.mark.network
 @pytest.mark.asyncio
 async def test_api_key_validation():
     client = OWMClient('123', 'v3.0')
