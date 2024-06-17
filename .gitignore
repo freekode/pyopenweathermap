@@ -120,3 +120,5 @@ node_modules/
 
 # Deepcode AI
 .dccache
+
+tmp_requirements.txt

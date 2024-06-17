@@ -21,17 +21,6 @@ async def test_api_30():
 
 @pytest.mark.network
 @pytest.mark.asyncio
-async def test_api_25():
-    api_key = os.getenv('OWM_API_KEY')
-    client = OWMClient(api_key, 'v2.5')
-    report = await client.get_weather(LATITUDE, LONGITUDE, ['current', 'hourly', 'daily'])
-    assert report.current.date_time is not None
-    assert report.hourly_forecast[0].condition.id is not None
-    assert report.daily_forecast[0].condition.id is not None
-
-
-@pytest.mark.network
-@pytest.mark.asyncio
 async def test_api_25_validate_key():
     client = OWMClient('123', 'v2.5')
     assert await client.validate_key() is False

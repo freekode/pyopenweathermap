@@ -1,0 +1,9 @@
+{
+	"name": "pyopenweathermap dev",
+    "context": "..",
+	"dockerFile": "../Dockerfile.dev",
+    "postCreateCommand": "./.devcontainer/post-create",
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    }
+}
