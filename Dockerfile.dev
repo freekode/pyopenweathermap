@@ -5,5 +5,4 @@ RUN \
     python -m pip install poetry && \
     poetry self add poetry-plugin-export
 
-
 ENV SHELL /bin/bash
