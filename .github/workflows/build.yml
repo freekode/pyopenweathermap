@@ -20,7 +20,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install
-      
+      \
       - name: Test with pytest
         env:
           OWM_API_KEY: ${{ secrets.OWM_API_KEY }}
