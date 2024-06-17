@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 poetry export -f requirements.txt --output tmp_requirements.txt --with dev
 pip install -r tmp_requirements.txt
