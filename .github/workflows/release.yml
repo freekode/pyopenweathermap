@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      new-version:
+        description: 'New version'
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Update version
+        run: |
+          poetry version ${{ inputs.new-version }}
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: 'version ${{ inputs.new-version }}'
+          tag: 'v${{ inputs.new-version }}'
+
+      - name: Publish package
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          poetry publish --build
+
+      
