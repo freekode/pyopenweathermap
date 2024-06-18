@@ -1,4 +1,23 @@
-{"dt": 1714063536, "sunrise": 1714018842, "sunset": 1714071341, "temp": 6.84, "feels_like": 2.07,
-            "pressure": 1000, "humidity": 82, "dew_point": 3.99, "uvi": 0.13, "clouds": 75, "visibility": 10000,
-            "wind_speed": 9.83, "wind_deg": 199,
-            "weather": [{"id": 803, "main": "Clouds", "description": "broken clouds", "icon": "04d"}]}
+{
+    "dt": 1714063536,
+    "sunrise": 1714018842,
+    "sunset": 1714071341,
+    "temp": 6.84,
+    "feels_like": 2.07,
+    "pressure": 1000,
+    "humidity": 82,
+    "dew_point": 3.99,
+    "uvi": 0.13,
+    "clouds": 75,
+    "visibility": 10000,
+    "wind_speed": 9.83,
+    "wind_deg": 199,
+    "weather": [
+        {
+            "id": 803,
+            "main": "Clouds",
+            "description": "broken clouds",
+            "icon": "04d"
+        }
+    ]
+}
