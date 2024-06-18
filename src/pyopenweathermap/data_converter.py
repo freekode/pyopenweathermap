@@ -5,7 +5,7 @@ from .weather import CurrentWeather, WeatherCondition, HourlyWeatherForecast, Da
 
 class DataConverter:
     @staticmethod
-    def to_current_weather(json):
+    def onecall_to_current_weather(json):
         return CurrentWeather(
             date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
             temperature=json['temp'],
@@ -25,7 +25,7 @@ class DataConverter:
         )
 
     @staticmethod
-    def to_hourly_weather_forecast(json):
+    def onecall_to_hourly_weather_forecast(json):
         return HourlyWeatherForecast(
             date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
             temperature=json['temp'],
@@ -46,7 +46,7 @@ class DataConverter:
         )
 
     @staticmethod
-    def to_daily_weather_forecast(json):
+    def onecall_to_daily_weather_forecast(json):
         return DailyWeatherForecast(
             date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
             summary=json.get('summary'),
@@ -63,6 +63,47 @@ class DataConverter:
             precipitation_probability=json.get('pop', 0),
             rain=json.get('rain', 0),
             snow=json.get('snow', 0),
+            condition=DataConverter._to_weather_condition(json['weather'][0]),
+        )
+        
+    @staticmethod
+    def freemium_to_current_weather(json):
+        return CurrentWeather(
+            date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
+            temperature=json['main']['temp'],
+            feels_like=json['main']['feels_like'],
+            pressure=json['main']['pressure'],
+            humidity=json['main']['humidity'],
+            dew_point=None,
+            uv_index=None,
+            cloud_coverage=json['clouds'],
+            visibility=json['visibility'],
+            wind_speed=json['wind']['speed'],
+            wind_gust=json['wind'].get('gust'),
+            wind_bearing=json['wind']['deg'],
+            rain=json.get('rain', {}),
+            snow=json.get('snow', {}),
+            condition=DataConverter._to_weather_condition(json['weather'][0]),
+        )
+        
+    @staticmethod
+    def freemium_to_hourly_weather_forecast(json):
+        return HourlyWeatherForecast(
+            date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
+            temperature=json['temp'],
+            feels_like=json['feels_like'],
+            pressure=json['pressure'],
+            humidity=json['humidity'],
+            dew_point=json['dew_point'],
+            uv_index=json['uvi'],
+            cloud_coverage=json['clouds'],
+            visibility=json.get('visibility', None),
+            wind_speed=json['wind_speed'],
+            wind_gust=json.get('wind_gust'),
+            wind_bearing=json['wind_deg'],
+            precipitation_probability=json.get('pop', 0),
+            rain=json.get('rain', {}),
+            snow=json.get('snow', {}),
             condition=DataConverter._to_weather_condition(json['weather'][0]),
         )
 
