@@ -21,7 +21,7 @@ class OWMFreemiumClient(OWMClient):
 
         current, hourly = None, []
         if self.api_type == 'current':
-            current = DataConverter.freemium_to_current_weather(json_response['current'])
+            current = DataConverter.freemium_to_current_weather(json_response)
         else:
             hourly = [DataConverter.freemium_to_hourly_weather_forecast(item) for item in json_response['list']]
         return WeatherReport(current, hourly, [])
