@@ -3,7 +3,8 @@ from .exception import (
     UnauthorizedError,
     TooManyRequestsError
 )
-from .owm_client import OWMClient
+from .client.owm_abstract_client import OWMClient
+from .client.owm_client_factory import OWMClientFactory
 from .weather import (
     CurrentWeather, HourlyWeatherForecast, DailyWeatherForecast, WeatherReport, DailyTemperature, WeatherCondition
 )

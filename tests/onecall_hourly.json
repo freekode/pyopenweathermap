@@ -1,0 +1,23 @@
+{
+    "dt": 1714168800,
+    "temp": 5.82,
+    "feels_like": 5.82,
+    "pressure": 1007,
+    "humidity": 87,
+    "dew_point": 3.85,
+    "uvi": 0,
+    "clouds": 100,
+    "visibility": 10000,
+    "wind_speed": 1.02,
+    "wind_deg": 167,
+    "wind_gust": 1.39,
+    "weather": [
+        {
+            "id": 500,
+            "main": "Rain",
+            "description": "light rain",
+            "icon": "10n"
+        }
+    ],
+    "pop": 0.79
+}
