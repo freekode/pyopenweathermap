@@ -67,7 +67,7 @@ class DataConverter:
         )
         
     @staticmethod
-    def freemium_to_current_weather(json):
+    def free_to_current_weather(json):
         return CurrentWeather(
             date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
             temperature=json['main']['temp'],
@@ -76,7 +76,7 @@ class DataConverter:
             humidity=json['main']['humidity'],
             dew_point=None,
             uv_index=None,
-            cloud_coverage=json['clouds'],
+            cloud_coverage=json['clouds']['all'],
             visibility=json.get('visibility', None),
             wind_speed=json['wind']['speed'],
             wind_gust=json['wind'].get('gust'),
@@ -87,7 +87,7 @@ class DataConverter:
         )
         
     @staticmethod
-    def freemium_to_hourly_weather_forecast(json):
+    def free_to_hourly_weather_forecast(json):
         return HourlyWeatherForecast(
             date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
             temperature=json['main']['temp'],

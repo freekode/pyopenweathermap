@@ -7,7 +7,7 @@ CURRENT_WEATHER_API_URL = 'https://api.openweathermap.org/data/2.5/weather'
 FORECAST_API_URL = 'https://api.openweathermap.org/data/2.5/forecast'
 
 
-class OWMFreemiumClient(OWMClient):
+class OWMFreeClient(OWMClient):
     def __init__(self, api_key, api_type, units="metric", lang='en'):
         super().__init__()
         self.api_key = api_key
@@ -21,9 +21,9 @@ class OWMFreemiumClient(OWMClient):
 
         current, hourly = None, []
         if self.api_type == 'current':
-            current = DataConverter.freemium_to_current_weather(json_response)
+            current = DataConverter.free_to_current_weather(json_response)
         else:
-            hourly = [DataConverter.freemium_to_hourly_weather_forecast(item) for item in json_response['list']]
+            hourly = [DataConverter.free_to_hourly_weather_forecast(item) for item in json_response['list']]
         return WeatherReport(current, hourly, [])
 
     async def validate_key(self) -> bool:
