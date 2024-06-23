@@ -33,7 +33,7 @@ async def test_api_25():
 
 @pytest.mark.network
 @pytest.mark.asyncio
-async def test_freemium_current_weather():
+async def test_free_current_weather():
     api_key = os.getenv('OWM_API_KEY')
     client = create_owm_client(api_key, 'current')
     report = await client.get_weather(LATITUDE, LONGITUDE)
@@ -44,7 +44,7 @@ async def test_freemium_current_weather():
     
 @pytest.mark.network
 @pytest.mark.asyncio
-async def test_freemium_forecast_weather():
+async def test_free_forecast_weather():
     api_key = os.getenv('OWM_API_KEY')
     client = create_owm_client(api_key, 'forecast')
     report = await client.get_weather(LATITUDE, LONGITUDE)
@@ -96,7 +96,7 @@ def test_hourly_weather_deserialization():
 
 def test_weather_deserialization():
     data = None
-    with open('tests/freemium_current.json') as f:
+    with open('tests/free_current.json') as f:
         data = json.load(f)
     weather = DataConverter.free_to_current_weather(data)
     assert weather.date_time is not None
@@ -105,7 +105,7 @@ def test_weather_deserialization():
 
 def test_forecast_deserialization():
     data = None
-    with open('tests/freemium_forecast.json') as f:
+    with open('tests/free_forecast.json') as f:
         data = json.load(f)
     weather = DataConverter.free_to_hourly_weather_forecast(data)
     assert weather.date_time is not None
