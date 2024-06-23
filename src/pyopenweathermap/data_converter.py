@@ -67,7 +67,7 @@ class DataConverter:
         )
         
     @staticmethod
-    def freemium_to_current_weather(json):
+    def free_to_current_weather(json):
         return CurrentWeather(
             date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
             temperature=json['main']['temp'],
@@ -87,7 +87,7 @@ class DataConverter:
         )
         
     @staticmethod
-    def freemium_to_hourly_weather_forecast(json):
+    def free_to_hourly_weather_forecast(json):
         return HourlyWeatherForecast(
             date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
             temperature=json['main']['temp'],
