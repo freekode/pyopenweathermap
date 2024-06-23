@@ -28,15 +28,15 @@ class CurrentWeather:
     feels_like: decimal.Decimal
     pressure: int
     humidity: int
-    dew_point: decimal.Decimal
-    uv_index: decimal.Decimal
+    dew_point: decimal.Decimal | None
+    uv_index: decimal.Decimal | None
     cloud_coverage: int
-    visibility: int
+    visibility: int | None
     wind_speed: decimal.Decimal
-    wind_gust: int
+    wind_gust: int | None
     wind_bearing: decimal.Decimal
-    rain: dict
-    snow: dict
+    rain: dict | None
+    snow: dict | None
     condition: WeatherCondition
 
 
@@ -47,23 +47,23 @@ class HourlyWeatherForecast:
     feels_like: decimal.Decimal
     pressure: int
     humidity: int
-    dew_point: decimal.Decimal
-    uv_index: decimal.Decimal
+    dew_point: decimal.Decimal | None
+    uv_index: decimal.Decimal | None
     cloud_coverage: int
-    visibility: int
+    visibility: int | None
     wind_speed: decimal.Decimal
-    wind_gust: decimal.Decimal
+    wind_gust: decimal.Decimal | None
     wind_bearing: int
     precipitation_probability: decimal.Decimal
-    rain: dict
-    snow: dict
+    rain: dict | None
+    snow: dict | None
     condition: WeatherCondition
 
 
 @dataclass
 class DailyWeatherForecast:
     date_time: datetime
-    summary: str
+    summary: str | None
     temperature: DailyTemperature
     feels_like: DailyTemperature
     pressure: int
@@ -72,7 +72,7 @@ class DailyWeatherForecast:
     uv_index: decimal.Decimal
     cloud_coverage: int
     wind_speed: decimal.Decimal
-    wind_gust: decimal.Decimal
+    wind_gust: decimal.Decimal | None
     wind_bearing: int
     precipitation_probability: decimal.Decimal
     rain: decimal.Decimal
