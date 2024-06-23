@@ -82,6 +82,6 @@ class DailyWeatherForecast:
 
 @dataclass
 class WeatherReport:
-    current: CurrentWeather
+    current: CurrentWeather | None
     hourly_forecast: list[HourlyWeatherForecast]
     daily_forecast: list[DailyWeatherForecast]
