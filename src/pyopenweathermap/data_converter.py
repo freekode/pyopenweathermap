@@ -76,7 +76,7 @@ class DataConverter:
             humidity=json['main']['humidity'],
             dew_point=None,
             uv_index=None,
-            cloud_coverage=json['clouds'],
+            cloud_coverage=json['clouds']['all'],
             visibility=json.get('visibility', None),
             wind_speed=json['wind']['speed'],
             wind_gust=json['wind'].get('gust'),
