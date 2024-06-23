@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyopenweathermap"
-version = "0.1.0"
+version = "0.1.1"
 description = "lib for OpenWeatherMap for Home Assistant"
 authors = ["Evgeny <iam@freekode.org>"]
 license = "MIT"
