@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from .weather import CurrentWeather, WeatherCondition, HourlyWeatherForecast, DailyWeatherForecast, DailyTemperature
+from .weather import CurrentWeather, WeatherCondition, MinutelyWeatherForecast, HourlyWeatherForecast, DailyWeatherForecast, DailyTemperature
 
 
 class DataConverter:
@@ -22,6 +22,13 @@ class DataConverter:
             rain=json.get('rain'),
             snow=json.get('snow'),
             condition=DataConverter._to_weather_condition(json['weather'][0]),
+        )
+    
+    @staticmethod
+    def onecall_to_minutely_weather_forecast(json):
+        return MinutelyWeatherForecast(
+            date_time=datetime.fromtimestamp(json['dt'], tz=UTC),
+            precipitation=json.get('precipitation'),
         )
 
     @staticmethod

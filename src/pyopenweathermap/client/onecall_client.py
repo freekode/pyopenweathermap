@@ -22,12 +22,14 @@ class OWMOneCallClient(OWMClient):
         current, hourly, daily = None, [], []
         if json_response.get('current') is not None:
             current = DataConverter.onecall_to_current_weather(json_response['current'])
+        if json_response.get('minutely') is not None:
+            minutely = [DataConverter.onecall_to_minutely_weather_forecast(item) for item in json_response['minutely']]
         if json_response.get('hourly') is not None:
             hourly = [DataConverter.onecall_to_hourly_weather_forecast(item) for item in json_response['hourly']]
         if json_response.get('daily') is not None:
             daily = [DataConverter.onecall_to_daily_weather_forecast(item) for item in json_response['daily']]
 
-        return WeatherReport(current, hourly, daily)
+        return WeatherReport(current, minutely, hourly, daily)
 
     async def validate_key(self) -> bool:
         url = (f"{self._get_url(50.06, 14.44)}"

@@ -24,7 +24,7 @@ class OWMFreeClient(OWMClient):
             current = DataConverter.free_to_current_weather(json_response)
         else:
             hourly = [DataConverter.free_to_hourly_weather_forecast(item) for item in json_response['list']]
-        return WeatherReport(current, hourly, [])
+        return WeatherReport(current,[], hourly, [])
 
     async def validate_key(self) -> bool:
         url = self._get_url(50.06, 14.44)

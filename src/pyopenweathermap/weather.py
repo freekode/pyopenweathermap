@@ -41,6 +41,12 @@ class CurrentWeather:
 
 
 @dataclass
+class MinutelyWeatherForecast:
+    date_time: datetime
+    precipitation: decimal.Decimal
+
+
+@dataclass
 class HourlyWeatherForecast:
     date_time: datetime
     temperature: decimal.Decimal
@@ -83,5 +89,6 @@ class DailyWeatherForecast:
 @dataclass
 class WeatherReport:
     current: CurrentWeather | None
+    minutely_forecast: list[MinutelyWeatherForecast]
     hourly_forecast: list[HourlyWeatherForecast]
     daily_forecast: list[DailyWeatherForecast]
