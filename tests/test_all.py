@@ -85,6 +85,15 @@ def test_current_weather_converter():
     assert weather.condition.id is not None
 
 
+def test_minutely_weather_deserialization():
+    data = None
+    with open('tests/onecall_minutely.json') as f:
+        data = json.load(f)
+    weather = DataConverter.onecall_to_minutely_weather_forecast(data)
+    assert weather.date_time is not None
+    assert weather.precipitation is not None
+
+
 def test_hourly_weather_deserialization():
     data = None
     with open('tests/onecall_hourly.json') as f:
