@@ -19,7 +19,7 @@ class OWMOneCallClient(OWMClient):
         url = self._get_url(lat, lon)
         json_response = await self.http_client.request(url)
 
-        current, hourly, daily = None, [], []
+        current, minutely, hourly, daily = None, [], [], []
         if json_response.get('current') is not None:
             current = DataConverter.onecall_to_current_weather(json_response['current'])
         if json_response.get('minutely') is not None:
