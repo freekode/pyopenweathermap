@@ -5,6 +5,8 @@ description = "lib for OpenWeatherMap for Home Assistant"
 authors = ["Evgeny <iam@freekode.org>"]
 license = "MIT"
 readme = "README.md"
+homepage = "https://github.com/freekode/pyopenweathermap"
+repository = "https://github.com/freekode/pyopenweathermap"
 keywords = ["homeassistant", "owm", "openweathermap"]
 packages = [
     { include = "pyopenweathermap", from = "src" },
