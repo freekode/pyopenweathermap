@@ -4,8 +4,7 @@ from ..exception import UnauthorizedError
 from ..weather import WeatherReport
 from ..air_pollution import AirPollutionReport
 
-V30_API_URL = 'https://api.openweathermap.org/data/3.0/onecall'
-V25_API_URL = 'https://api.openweathermap.org/data/2.5/onecall'
+API_URL = 'https://api.openweathermap.org/data/3.0/onecall'
 
 
 class OWMOneCallClient(OWMClient):
@@ -45,8 +44,7 @@ class OWMOneCallClient(OWMClient):
             return False
 
     def _get_url(self, lat, lon):
-        url = V30_API_URL if self.api_version == 'v3.0' else V25_API_URL 
-        return (f"{url}?"
+        return (f"{API_URL}?"
                 f"lat={lat}&"
                 f"lon={lon}&"
                 f"appid={self.api_key}&"
