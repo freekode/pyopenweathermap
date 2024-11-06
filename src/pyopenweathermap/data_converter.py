@@ -1,6 +1,7 @@
 from datetime import UTC, datetime
 
 from .weather import CurrentWeather, WeatherCondition, MinutelyWeatherForecast, HourlyWeatherForecast, DailyWeatherForecast, DailyTemperature
+from .air_pollution import CurrentAirPollution
 
 
 class DataConverter:
@@ -72,7 +73,40 @@ class DataConverter:
             snow=json.get('snow', 0),
             condition=DataConverter._to_weather_condition(json['weather'][0]),
         )
-        
+
+    @staticmethod
+    def air_pollution_current(json):
+        data = json['list'][0]
+        components = data['components']
+        return CurrentAirPollution(
+            date_time=datetime.fromtimestamp(data["dt"], tz=UTC),
+            aqi=data['main']['aqi'],
+            co=components['co'],
+            no=components['no'],
+            no2=components['no2'],
+            o3=components['o3'],
+            so2=components['so2'],
+            pm2_5=components['pm2_5'],
+            pm10=components['pm10'],
+            nh3=components['nh3'],
+        )
+
+    @staticmethod
+    def air_pollution_hourly(json):
+        components = json['components']
+        return CurrentAirPollution(
+            date_time=datetime.fromtimestamp(json["dt"], tz=UTC),
+            aqi=json['main']['aqi'],
+            co=components['co'],
+            no=components['no'],
+            no2=components['no2'],
+            o3=components['o3'],
+            so2=components['so2'],
+            pm2_5=components['pm2_5'],
+            pm10=components['pm10'],
+            nh3=components['nh3'],
+        )
+
     @staticmethod
     def free_to_current_weather(json):
         return CurrentWeather(

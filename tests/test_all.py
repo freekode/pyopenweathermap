@@ -52,6 +52,19 @@ async def test_free_forecast_weather():
     assert report.hourly_forecast[0].temperature is not None
     assert len(report.daily_forecast) is 0
 
+@pytest.mark.network
+@pytest.mark.asyncio
+async def test_air_pollution():
+    api_key = os.getenv('OWM_API_KEY')
+    client = create_owm_client(api_key, 'air_pollution')
+
+    report = await client.get_air_pollution(LATITUDE, LONGITUDE)
+    assert report.current.date_time is not None
+    assert isinstance(report.current.aqi, int)
+    assert report.current.co is not None
+    assert len(report.hourly_forecast) > 0
+    assert isinstance(report.hourly_forecast[0].aqi, int)
+    assert report.hourly_forecast[0].co is not None
 
 @pytest.mark.network
 @pytest.mark.asyncio
