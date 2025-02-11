@@ -1,13 +1,12 @@
-from .owm_abstract_client import OWMClient
+from .abstract_weather_client import OWMWeatherClient
 from ..data_converter import DataConverter
 from ..exception import UnauthorizedError
 from ..weather import WeatherReport
-from ..air_pollution import AirPollutionReport
 
 API_URL = 'https://api.openweathermap.org/data/3.0/onecall'
 
 
-class OWMOneCallClient(OWMClient):
+class OWMOneCallClient(OWMWeatherClient):
     def __init__(self, api_key, api_version, units="metric", lang='en'):
         super().__init__()
         self.api_key = api_key
@@ -30,9 +29,6 @@ class OWMOneCallClient(OWMClient):
             daily = [DataConverter.onecall_to_daily_weather_forecast(item) for item in json_response['daily']]
 
         return WeatherReport(current, minutely, hourly, daily)
-
-    async def get_air_pollution(self, lat, lon) -> AirPollutionReport:
-        raise NotImplementedError('free client does not have get_air_pollution()')
 
     async def validate_key(self) -> bool:
         url = (f"{self._get_url(50.06, 14.44)}"
