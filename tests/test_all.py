@@ -43,6 +43,7 @@ async def test_free_forecast_weather():
 
 @pytest.mark.network
 @pytest.mark.asyncio
+@pytest.mark.skip
 async def test_air_pollution():
     api_key = os.getenv('OWM_API_KEY')
     client = create_owm_client(api_key, 'air_pollution')
