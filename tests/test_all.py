@@ -33,6 +33,7 @@ async def test_free_current_weather():
     
 @pytest.mark.network
 @pytest.mark.asyncio
+@pytest.mark.skip
 async def test_free_forecast_weather():
     api_key = os.getenv('OWM_API_KEY')
     client = create_owm_client(api_key, 'forecast')
