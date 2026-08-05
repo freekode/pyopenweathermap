@@ -1,13 +1,11 @@
-from .owm_abstract_client import OWMClient
 from ..data_converter import DataConverter
 from ..exception import UnauthorizedError
-from ..weather import WeatherReport
 from ..air_pollution import AirPollutionReport
 
 CURRENT_AIR_POLLUTION_API_URL = 'https://api.openweathermap.org/data/2.5/air_pollution'
 FORECAST_API_URL = 'https://api.openweathermap.org/data/2.5/air_pollution/forecast'
 
-class OWMAirPollutionClient(OWMClient):
+class OWMAirPollutionClient:
     def __init__(self, api_key):
         super().__init__()
         self.api_key = api_key
@@ -22,9 +20,6 @@ class OWMAirPollutionClient(OWMClient):
         hourly = [DataConverter.air_pollution_hourly(item) for item in forecast_json['list']]
 
         return AirPollutionReport(current, hourly)
-
-    async def get_weather(self, lat, lon) -> WeatherReport:
-        raise NotImplementedError('Air Pollution client does not have get_weather()')
 
     async def validate_key(self) -> bool:
         url = self._get_url(50.06, 14.44, 'api_type')
