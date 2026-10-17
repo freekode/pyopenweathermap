@@ -44,7 +44,10 @@ class OWMOneCallClient(OWMClient):
             return False
 
     def _get_url(self, lat, lon):
-        return (f"{API_URL}?"
+        api_url = 'https://api.openweathermap.org/data/3.0/onecall'
+        if getattr(self, 'api_version', None) == 'v4.0':
+            api_url = 'https://api.openweathermap.org/data/4.0/onecall'
+        return (f"{api_url}?"
                 f"lat={lat}&"
                 f"lon={lon}&"
                 f"appid={self.api_key}&"
