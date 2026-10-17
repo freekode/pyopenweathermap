@@ -1,0 +1,11 @@
+{
+  "lat": 51.5,
+  "lon": -0.1,
+  "timezone": "Europe/London",
+  "timezone_offset": 3600,
+  "data": [
+    {"dt": 1780300800, "precipitation": 0.4},
+    {"dt": 1780300860, "precipitation": 0.4},
+    {"dt": 1780300920, "precipitation": 0.4}
+  ]
+}

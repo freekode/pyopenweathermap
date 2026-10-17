@@ -1,0 +1,9 @@
+{
+  "lat": 51.5,
+  "lon": -0.1,
+  "timezone": "Europe/London",
+  "timezone_offset": 3600,
+  "data": [
+    {"dt": 1780300800, "temp": {"day": 12.5, "min": 8.0, "max": 14.0, "night": 9.0, "eve": 11.0, "morn": 8.5}, "feels_like": {"day": 11.0, "night": 8.0, "eve": 10.0, "morn": 7.0}, "pressure": 1013, "humidity": 70, "dew_point": 7.2, "uvi": 2.0, "clouds": 75, "wind_speed": 3.5, "wind_deg": 180, "wind_gust": 5.0, "pop": 0.6, "rain": {"1h": 0.4}, "weather": [{"id": 500, "main": "Rain", "description": "light rain", "icon": "10d"}], "snow": {"1h": 0.2}}
+  ]
+}
