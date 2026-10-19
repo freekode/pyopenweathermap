@@ -1,0 +1,33 @@
+[
+  {
+    "status": 400,
+    "body": {
+      "cod": 400,
+      "message": "Latitude is outside the allowed range",
+      "parameters": [
+        "lat"
+      ]
+    }
+  },
+  {
+    "status": 401,
+    "body": {
+      "cod": 401,
+      "message": "Synthetic key is not authorized"
+    }
+  },
+  {
+    "status": 404,
+    "body": {
+      "cod": 404,
+      "message": "Synthetic route not found"
+    }
+  },
+  {
+    "status": 429,
+    "body": {
+      "cod": 429,
+      "message": "Synthetic request limit exceeded"
+    }
+  }
+]

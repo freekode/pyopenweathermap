@@ -22,13 +22,23 @@ async def test_api_30():
     
 @pytest.mark.network
 @pytest.mark.asyncio
+async def test_api_40():
+    api_key = os.getenv('OWM_API_KEY')
+    client = create_owm_client(api_key, 'v4.0')
+    report = await client.get_weather(LATITUDE, LONGITUDE)
+    assert report.current.date_time is not None
+    assert report.hourly_forecast[0].condition.id is not None
+    assert report.daily_forecast[0].condition.id is not None
+    
+@pytest.mark.network
+@pytest.mark.asyncio
 async def test_free_current_weather():
     api_key = os.getenv('OWM_API_KEY')
     client = create_owm_client(api_key, 'current')
     report = await client.get_weather(LATITUDE, LONGITUDE)
     assert report.current.date_time is not None
-    assert len(report.hourly_forecast) is 0
-    assert len(report.daily_forecast) is 0
+    assert len(report.hourly_forecast) == 0
+    assert len(report.daily_forecast) == 0
     
     
 @pytest.mark.network
@@ -40,7 +50,7 @@ async def test_free_forecast_weather():
     report = await client.get_weather(LATITUDE, LONGITUDE)
     assert report.current is None
     assert report.hourly_forecast[0].temperature is not None
-    assert len(report.daily_forecast) is 0
+    assert len(report.daily_forecast) == 0
 
 @pytest.mark.network
 @pytest.mark.asyncio
@@ -58,6 +68,7 @@ async def test_air_pollution():
     assert report.hourly_forecast[0].co is not None
 
 
+@pytest.mark.network
 @pytest.mark.asyncio
 async def test_request_error():
     api_key = os.getenv('OWM_API_KEY')
@@ -117,3 +128,9 @@ def test_forecast_deserialization():
     weather = DataConverter.free_to_hourly_weather_forecast(data)
     assert weather.date_time is not None
     assert weather.condition.id is not None
+
+def test_v40_url():
+    client = create_owm_client('fake_key', 'v4.0')
+    url = client._get_url(10.0, 20.0)
+    assert url.startswith('https://api.openweathermap.org/data/4.0/onecall/current?')
+    assert 'fake_key' in url

@@ -26,6 +26,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
+addopts = "-m 'not network'"
 markers = [
     "network: tests that require network access"
 ]
