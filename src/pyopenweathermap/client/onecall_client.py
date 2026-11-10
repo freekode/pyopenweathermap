@@ -144,14 +144,14 @@ class OWMOneCallClient(OWMClient):
         except ValueError as error:
             raise RequestError('Invalid One Call 4.0 pagination link') from error
         expected = urlsplit(f'{V4_API_URL}/{endpoint}')
-        if (parts.scheme != 'https' or parts.netloc != expected.netloc
+        if (parts.scheme not in ('http', 'https') or parts.netloc != expected.netloc
                 or parts.path != expected.path or parts.fragment):
             raise RequestError('Unsafe One Call 4.0 pagination link')
         query = dict(parse_qsl(parts.query, keep_blank_values=True))
         # Some documented links omit units/lang. Preserve the caller's options
         # and location/key even if a next link omits or changes them.
         query.update(self._query_params(lat, lon))
-        return urlunsplit(parts._replace(query=urlencode(query)))
+        return urlunsplit(parts._replace(scheme=expected.scheme, query=urlencode(query)))
 
     async def get_air_pollution(self, lat, lon) -> AirPollutionReport:
         raise NotImplementedError('One Call client does not have get_air_pollution()')

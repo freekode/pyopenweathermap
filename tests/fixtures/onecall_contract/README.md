@@ -1,9 +1,11 @@
 # One Call contract fixtures
 
-Every JSON file here is **synthetic**. Values, coordinates, timestamps, weather,
-IDs, messages, and pagination links are test inputs, not captured API responses.
+Except for `v4_daily_live_redacted.json`, every JSON file here is **synthetic**.
+Synthetic values, coordinates, timestamps, weather, IDs, messages, and pagination
+links are test inputs, not captured API responses.
 `fixture-not-a-key` is deliberately nonfunctional. No account or credential was
-read and no authenticated OpenWeather call was made to produce these fixtures.
+read and no authenticated OpenWeather call was made to produce the synthetic
+fixtures.
 
 ## Provenance and intent
 
@@ -16,6 +18,12 @@ read and no authenticated OpenWeather call was made to produce these fixtures.
 - `v4_daily_synthetic.json`: eight days preserving the legacy forecast horizon.
   Scalar daily precipitation follows the migration guide; missing optional
   fields exercise converter defaults.
+- `v4_daily_live_redacted.json`: daily weather rows captured for public Chicago
+  on 2026-10-26 at 02:35:32 UTC, wrapped in a `data` envelope. Contains only
+  public weather fields; coordinates, account data, credentials, and pagination
+  links are absent. Ten captured days exercise the eight-day client horizon,
+  supplied UV values (including zero), and absent later-day UV values. This is
+  sanitized response evidence, not a substitute for live integration testing.
 - `v4_daily_precipitation_reference_variant.json`: follows the conflicting
   reference's daily `rain.1h`/`snow.1h` shape. The v4 adapter deliberately raises
   `RequestError` because an hourly rate cannot be treated as a daily total.

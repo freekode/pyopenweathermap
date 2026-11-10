@@ -75,11 +75,11 @@ class DailyWeatherForecast:
     pressure: int
     humidity: int
     dew_point: decimal.Decimal
-    uv_index: decimal.Decimal
+    uv_index: decimal.Decimal | None
     cloud_coverage: int
     wind_speed: decimal.Decimal
     wind_gust: decimal.Decimal | None
-    wind_bearing: int
+    wind_bearing: int | None
     precipitation_probability: decimal.Decimal
     rain: decimal.Decimal
     snow: decimal.Decimal

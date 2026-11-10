@@ -1,4 +1,4 @@
-"""Offline edge cases for the v4 adapter using synthetic, non-live records."""
+"""Offline edge cases for the v4 adapter using sanitized and synthetic records."""
 
 from copy import deepcopy
 import json
@@ -10,6 +10,7 @@ import pytest
 from pyopenweathermap import (
     RequestError, TooManyRequestsError, UnauthorizedError, create_owm_client,
 )
+from pyopenweathermap.data_converter import DataConverter
 
 FIXTURES = Path(__file__).parent / "fixtures" / "onecall_contract"
 BASE = "https://api.openweathermap.org/data/4.0/onecall/"
@@ -75,21 +76,29 @@ def endpoint_calls(calls, endpoint):
 
 
 UNSAFE_NEXT = [
-    "http://api.openweathermap.org/data/4.0/onecall/timeline/1h?start=1",
     "//api.openweathermap.org/data/4.0/onecall/timeline/1h?start=1",
     "/data/4.0/onecall/timeline/1h?start=1",
     "?start=1",
-    "https://example.invalid/data/4.0/onecall/timeline/1h?start=1",
-    "https://api.openweathermap.org.example.invalid/data/4.0/onecall/timeline/1h",
-    "https://api.openweathermap.org@example.invalid/data/4.0/onecall/timeline/1h",
-    "https://user@api.openweathermap.org/data/4.0/onecall/timeline/1h",
-    "https://api.openweathermap.org:8443/data/4.0/onecall/timeline/1h",
-    BASE + "current?start=1",
-    BASE + "timeline/1min?start=1",
-    BASE + "timeline/1h/../1day?start=1",
-    BASE + "timeline/1h%2f..%2f1day?start=1",
-    BASE + "timeline/1h?start=1#fragment",
-    "https://[malformed/data/4.0/onecall/timeline/1h",
+    *[
+        f"{scheme}://{target}"
+        for scheme in ("http", "https")
+        for target in (
+            "example.invalid/data/4.0/onecall/timeline/1h?start=1",
+            "api.openweathermap.org.example.invalid/data/4.0/onecall/timeline/1h",
+            "api.openweathermap.org@example.invalid/data/4.0/onecall/timeline/1h",
+            "user@api.openweathermap.org/data/4.0/onecall/timeline/1h",
+            "api.openweathermap.org:8443/data/4.0/onecall/timeline/1h",
+            "api.openweathermap.org:443/data/4.0/onecall/timeline/1h",
+            "api.openweathermap.org/data/4.0/onecall/current?start=1",
+            "api.openweathermap.org/data/4.0/onecall/timeline/1min?start=1",
+            "api.openweathermap.org/data/4.0/onecall/timeline/1h/../1day?start=1",
+            "api.openweathermap.org/data/4.0/onecall/timeline/1h%2f..%2f1day?start=1",
+            "api.openweathermap.org/data/4.0/onecall/timeline/1h?start=1#fragment",
+            "[malformed/data/4.0/onecall/timeline/1h",
+        )
+    ],
+    *[BASE.replace("https:", scheme + ":") + "timeline/1h?start=1"
+      for scheme in ("ftp", "file", "javascript")],
     42, False, [], {},
 ]
 
@@ -105,29 +114,95 @@ async def test_unsafe_or_malformed_next_is_rejected_before_request(monkeypatch, 
     assert len(endpoint_calls(calls, "timeline/1h")) == 1
     assert not endpoint_calls(calls, "timeline/1day")
     assert all(urlsplit(url).netloc == "api.openweathermap.org" for url in calls)
+    assert all(urlsplit(url).scheme == "https" for url in calls)
 
 
+@pytest.mark.parametrize("next_scheme", ["http", "https"])
 @pytest.mark.parametrize("next_query", [
     "start=1780304400",
     "start=1780304400&units=standard&lang=de&lat=0&lon=0&appid=wrong&appid=other",
 ])
 @pytest.mark.asyncio
-async def test_next_preserves_caller_location_key_units_and_language(monkeypatch, next_query):
+async def test_next_preserves_caller_location_key_units_and_language(
+        monkeypatch, next_query, next_scheme):
     rows = rows_for("timeline/1h", range(2), 3600)
     client, calls = stub_api(monkeypatch, {"timeline/1h": [
-        {"data": rows[:1], "next": BASE + "timeline/1h?" + next_query},
+        {"data": rows[:1], "next": BASE.replace("https:", next_scheme + ":") + "timeline/1h?" + next_query},
         {"data": rows[1:]},
     ]})
     report = await client.get_weather(LAT, LON)
     assert len(report.hourly_forecast) == 2
     assert len(endpoint_calls(calls, "timeline/1h")) == 2
     for url in calls:
+        assert urlsplit(url).scheme == "https"
         query = parse_qs(urlsplit(url).query)
         assert {name: query[name] for name in ("lat", "lon", "appid", "units", "lang")} == {
             "lat": [str(LAT)], "lon": [str(LON)], "appid": [KEY],
             "units": ["imperial"], "lang": ["fr"],
         }
     assert parse_qs(urlsplit(endpoint_calls(calls, "timeline/1h")[1]).query)["start"] == ["1780304400"]
+
+
+@pytest.mark.asyncio
+async def test_http_hourly_next_links_return_48_records_over_https(monkeypatch):
+    pages = [fixture(f"v4_hourly_page{number}_synthetic.json") for number in range(1, 4)]
+    for page in pages:
+        if page.get("next"):
+            page["next"] = page["next"].replace("https:", "http:")
+    client, calls = stub_api(monkeypatch, {"timeline/1h": pages})
+    report = await client.get_weather(LAT, LON)
+    assert len(report.hourly_forecast) == 48
+    assert [int(row.date_time.timestamp()) for row in report.hourly_forecast] == [
+        row["dt"] for page in pages for row in page["data"]
+    ]
+    assert len(endpoint_calls(calls, "timeline/1h")) == 3
+    assert all(urlsplit(url).scheme == "https" for url in calls)
+
+
+@pytest.mark.asyncio
+async def test_sanitized_live_daily_rows_preserve_uv_and_eight_day_horizon(monkeypatch):
+    payload = fixture("v4_daily_live_redacted.json")
+    client, calls = stub_api(monkeypatch, {"timeline/1day": [payload]})
+    report = await client.get_weather(LAT, LON)
+    assert len(report.daily_forecast) == 8
+    for actual, row in zip(report.daily_forecast, payload["data"][:8], strict=True):
+        assert int(actual.date_time.timestamp()) == row["dt"]
+        assert actual.uv_index == row.get("uvi")
+        assert actual.wind_bearing == row["wind_deg"]
+        assert actual.temperature.day == row["temp"]["day"]
+    assert len(endpoint_calls(calls, "timeline/1day")) == 1
+    assert all(urlsplit(url).scheme == "https" for url in calls)
+
+
+@pytest.mark.parametrize("missing_fields", [(), ("uvi",), ("wind_deg",), ("uvi", "wind_deg")])
+@pytest.mark.parametrize("value", [0, 120])
+@pytest.mark.asyncio
+async def test_daily_optional_uv_and_wind_preserve_unknown_zero_and_other_fields(
+        monkeypatch, missing_fields, value):
+    row = row_for("timeline/1day")
+    row.update(uvi=value, wind_deg=value)
+    expected = DataConverter.onecall_to_daily_weather_forecast(row)
+    for field, attribute in (("uvi", "uv_index"), ("wind_deg", "wind_bearing")):
+        if field in missing_fields:
+            row.pop(field)
+            setattr(expected, attribute, None)
+    original = deepcopy(row)
+    assert DataConverter.onecall_to_daily_weather_forecast(row) == expected
+    assert row == original
+    client, _ = stub_api(monkeypatch, {"timeline/1day": [{"data": [row]}]})
+    report = await client.get_weather(LAT, LON)
+    assert report.daily_forecast == [expected]
+    assert report.daily_forecast[0].uv_index == (None if "uvi" in missing_fields else value)
+    assert report.daily_forecast[0].wind_bearing == (None if "wind_deg" in missing_fields else value)
+
+
+@pytest.mark.asyncio
+async def test_missing_required_daily_temperature_still_raises_request_error(monkeypatch):
+    row = row_for("timeline/1day")
+    row.pop("temp")
+    client, _ = stub_api(monkeypatch, {"timeline/1day": [{"data": [row]}]})
+    with pytest.raises(RequestError, match="Invalid One Call 4.0 weather record"):
+        await client.get_weather(LAT, LON)
 
 
 @pytest.mark.parametrize("endpoint,attribute,name,count,interval", FORECASTS)
